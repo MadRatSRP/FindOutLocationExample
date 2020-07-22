@@ -1,12 +1,9 @@
 package com.madrat.myapp
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -14,10 +11,14 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.*
-import java.util.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.madrat.myapp.databinding.ActivityMapsBinding
 
 class MapsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMapsBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -25,7 +26,12 @@ class MapsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+
+        // ViewBinding initialization
+        binding = ActivityMapsBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         /*Check location*/
         checkLocation()
     }
