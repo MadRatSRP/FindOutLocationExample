@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">FindOutLocationExample</string>
     <string name="title_activity_maps">Map</string>
+
+    // Screens
+    // Location
+    <string name="current_location">CurrentLocation</string>
+    <string name="current_latitude">Latitude: %1$f</string>
+    <string name="current_longitude">Longitude: %1$f</string>
 </resources>

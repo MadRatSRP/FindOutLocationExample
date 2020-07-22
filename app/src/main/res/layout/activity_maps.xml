@@ -9,21 +9,19 @@
     <TextView
         android:id="@+id/currentLocation"
         android:gravity="center"
-        android:text="CurrentLocation"
+        android:text="@string/current_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/latitudeTextView"
         android:layout_marginTop="10dp"
         android:textSize="18sp"
-        android:text="Latitude : "
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/longitudeTextView"
         android:layout_marginTop="10dp"
         android:textSize="18sp"
-        android:text="Longitude :"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <fragment

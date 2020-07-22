@@ -14,8 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.madrat.myapp.databinding.ActivityMapsBinding
 
 
@@ -31,6 +33,10 @@ class MapsActivity : AppCompatActivity() {
 
     private lateinit var client: FusedLocationProviderClient
 
+    // Get the SupportMapFragment and request notification
+    // when the map is ready to be used.
+    private lateinit var mapFragment: SupportMapFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,8 +48,27 @@ class MapsActivity : AppCompatActivity() {
         // Client initialization
         client = LocationServices.getFusedLocationProviderClient(this)
 
+        // Map initialization
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
         // method to get the location
         getLastLocation()
+    }
+    // If everything is alright then
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.isNotEmpty()
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation()
+            }
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+        if (checkPermissions()) {
+            getLastLocation()
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -63,18 +88,12 @@ class MapsActivity : AppCompatActivity() {
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        binding.latitudeTextView.text = location.latitude.toString() + ""
-                        binding.longitudeTextView.text = location.longitude.toString() + ""
+                        updateViewsWithLocation(location.latitude, location.longitude)
                     }
                 }
             } else {
-                Toast
-                    .makeText(
-                        this, "Please turn on"
-                                + " your location...",
-                        Toast.LENGTH_LONG
-                    )
-                    .show()
+                Toast.makeText(this, "Please turn on" +
+                        " your location...", Toast.LENGTH_LONG).show()
                 val intent = Intent(
                     Settings.ACTION_LOCATION_SOURCE_SETTINGS
                 )
@@ -86,13 +105,14 @@ class MapsActivity : AppCompatActivity() {
             requestPermissions()
         }
     }
-
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
-
         // Initializing LocationRequest
         // object with appropriate methods
         val mLocationRequest = LocationRequest()
+
+        // For a high level accuracy use PRIORITY_HIGH_ACCURACY argument.
+        // For a low level accuracy (city), use PRIORITY_LOW_POWER
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         mLocationRequest.interval = 5
         mLocationRequest.fastestInterval = 0
@@ -101,18 +121,16 @@ class MapsActivity : AppCompatActivity() {
         // setting LocationRequest
         // on FusedLocationClient
         client = LocationServices.getFusedLocationProviderClient(this)
-        client.requestLocationUpdates(mLocationRequest, mLocationCallback,
+        client.requestLocationUpdates(mLocationRequest, locationCallback,
             Looper.myLooper())
     }
-
-    private val mLocationCallback: LocationCallback = object : LocationCallback() {
+    private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            val mLastLocation: Location = locationResult.lastLocation
-            binding.latitudeTextView.text = ("Latitude: " + mLastLocation.latitude) + ""
-            binding.longitudeTextView.text = ("Longitude: " + mLastLocation.longitude) + ""
+            val lastLocation: Location = locationResult.lastLocation
+
+            updateViewsWithLocation(lastLocation.latitude, lastLocation.longitude)
         }
     }
-
     // method to check for permissions
     private fun checkPermissions(): Boolean {
         return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -131,13 +149,11 @@ class MapsActivity : AppCompatActivity() {
             == PackageManager.PERMISSION_GRANTED
         */
     }
-
-    // method to requestfor permissions
+    // method to request for permissions
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_ID)
     }
-
     // method to check
     // if location is enabled
     private fun isLocationEnabled(): Boolean {
@@ -145,22 +161,31 @@ class MapsActivity : AppCompatActivity() {
         return (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
     }
+    private fun updateViewsWithLocation(latitude: Double, longitude: Double) {
+        binding.latitudeTextView.text = applicationContext.getString(
+            R.string.current_latitude, latitude
+        )
+        binding.longitudeTextView.text = applicationContext.getString(
+            R.string.current_longitude, longitude
+        )
 
-    // If everything is alright then
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.isNotEmpty()
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation()
-            }
-        }
-    }
+        mapFragment.getMapAsync {googleMap ->
+            // Add a marker in Sydney, Australia,
+            // and move the map's camera to the same location.
+            val currentLocation = LatLng(latitude, longitude)
 
-    override fun onResume() {
-        super.onResume()
-        if (checkPermissions()) {
-            getLastLocation()
+            /*googleMap.addMarker(
+                MarkerOptions().position(currentLocation)
+                    .title("New Marker")
+            )*/
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
+
+            // Zoom in, animating the camera.
+            //googleMap.animateCamera(CameraUpdateFactory.zoomIn())
+
+            // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10F), 2000, null)
         }
     }
 }
