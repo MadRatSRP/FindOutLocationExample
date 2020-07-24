@@ -23,26 +23,24 @@ import com.madrat.myapp.databinding.ActivityMapsBinding
 
 class MapsActivity : AppCompatActivity() {
     companion object {
-        private const val PERMISSION_ID = 44
+        private const val PERMISSION_GET_LAST_LOCATION_ID = 44
 
-        private const val PERMISSIONS_LOCATION_ID = 100
+        private const val PERMISSIONS_ALLOW_USING_LOCATION_ID = 100
     }
 
-    private lateinit var binding: ActivityMapsBinding
+    lateinit var binding: ActivityMapsBinding
 
-    private lateinit var locationClient: FusedLocationProviderClient
+    lateinit var locationClient: FusedLocationProviderClient
 
     // Get the SupportMapFragment and request notification
     // when the map is ready to be used.
-    private lateinit var mapFragment: SupportMapFragment
+    lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ViewBinding initialization
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        binding = ActivityMapsBinding.inflate(this.layoutInflater)
+        setContentView(binding.root)
 
         // Client initialization
         locationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -56,9 +54,8 @@ class MapsActivity : AppCompatActivity() {
     // If everything is alright then
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.isNotEmpty()
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == PERMISSION_GET_LAST_LOCATION_ID) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation()
             }
         }
@@ -85,7 +82,7 @@ class MapsActivity : AppCompatActivity() {
                     == PackageManager.PERMISSION_DENIED && ActivityCompat.checkSelfPermission(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(
-                        this, arrayOf(Manifest.permission_group.LOCATION), PERMISSIONS_LOCATION_ID
+                        this, arrayOf(Manifest.permission_group.LOCATION), PERMISSIONS_ALLOW_USING_LOCATION_ID
                     )
                 } else {
                     locationClient.lastLocation.addOnCompleteListener { task ->
@@ -114,14 +111,14 @@ class MapsActivity : AppCompatActivity() {
     private fun requestNewLocationData() {
         // Initializing LocationRequest
         // object with appropriate methods
-        val mLocationRequest = LocationRequest()
+        val locationRequest = LocationRequest()
 
         // For a high level accuracy use PRIORITY_HIGH_ACCURACY argument.
         // For a low level accuracy (city), use PRIORITY_LOW_POWER
-        mLocationRequest.priority = LocationRequest.PRIORITY_LOW_POWER
-        mLocationRequest.interval = 5
-        mLocationRequest.fastestInterval = 0
-        mLocationRequest.numUpdates = 1
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 3
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 2
 
         // setting LocationRequest
         // on FusedLocationClient
@@ -131,10 +128,10 @@ class MapsActivity : AppCompatActivity() {
             == PackageManager.PERMISSION_DENIED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission_group.LOCATION), PERMISSIONS_LOCATION_ID
+                this, arrayOf(Manifest.permission_group.LOCATION), PERMISSIONS_ALLOW_USING_LOCATION_ID
             )
         } else {
-            locationClient.requestLocationUpdates(mLocationRequest,
+            locationClient.requestLocationUpdates(locationRequest,
                 locationCallback, Looper.myLooper())
         }
     }
@@ -166,7 +163,7 @@ class MapsActivity : AppCompatActivity() {
     // method to request for permissions
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_ID)
+            Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_GET_LAST_LOCATION_ID)
     }
     // method to check
     // if location is enabled
@@ -176,6 +173,9 @@ class MapsActivity : AppCompatActivity() {
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
     }
     private fun updateViewsWithLocation(latitude: Double, longitude: Double) {
+        println(latitude)
+        println(longitude)
+
         binding.latitudeTextView.text = applicationContext.getString(
             R.string.current_latitude, latitude
         )
@@ -184,6 +184,7 @@ class MapsActivity : AppCompatActivity() {
         )
 
         mapFragment.getMapAsync {googleMap ->
+            /*
             // Add a marker in Sydney, Australia,
             // and move the map's camera to the same location.
             val currentLocation = LatLng(latitude, longitude)
@@ -199,7 +200,16 @@ class MapsActivity : AppCompatActivity() {
             //googleMap.animateCamera(CameraUpdateFactory.zoomIn())
 
             // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-            //googleMap.animateCamera(CameraUpdateFactory.zoomTo(10F), 2000, null)
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(10F), 3000, null)
+            */
+
+
+            //googleMap.animateCamera(CameraUpdateFactory.zoomTo(10F), 3000, null)
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                LatLng(latitude, longitude), 10f))
+
+            //googleMap.uiSettings.isMapToolbarEnabled = true
         }
     }
 }
