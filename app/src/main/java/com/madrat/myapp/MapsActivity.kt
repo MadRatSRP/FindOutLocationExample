@@ -17,10 +17,13 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.madrat.myapp.databinding.ActivityMapsBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 // Реализация этого решения
 // https://www.geeksforgeeks.org/how-to-get-user-location-in-android/
 
+@AndroidEntryPoint
 class MapsActivity : AppCompatActivity() {
     companion object {
         private const val PERMISSION_GET_LAST_LOCATION_ID = 44
@@ -28,29 +31,29 @@ class MapsActivity : AppCompatActivity() {
         private const val PERMISSIONS_ALLOW_USING_LOCATION_ID = 100
     }
 
-    lateinit var binding: ActivityMapsBinding
+    @Inject lateinit var binding: ActivityMapsBinding
 
-    lateinit var locationClient: FusedLocationProviderClient
+    @Inject lateinit var locationClient: FusedLocationProviderClient
 
     // Get the SupportMapFragment and request notification
     // when the map is ready to be used.
-    lateinit var mapFragment: SupportMapFragment
+    private lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMapsBinding.inflate(this.layoutInflater)
         setContentView(binding.root)
-
-        // Client initialization
-        locationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Map initialization
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+    }
 
+    override fun onStart() {
+        super.onStart()
         // method to get the location
         getLastLocation()
     }
+
     // If everything is alright then
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

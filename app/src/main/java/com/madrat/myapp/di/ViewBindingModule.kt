@@ -1,19 +1,17 @@
 package com.madrat.myapp.di
 
-import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
-import com.madrat.myapp.MapsActivity
+import androidx.fragment.app.FragmentActivity
 import com.madrat.myapp.databinding.ActivityMapsBinding
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
-import dagger.hilt.android.qualifiers.ActivityContext
 
+@Module
+@InstallIn(ActivityComponent::class)
 object ViewBindingModule {
-    fun provideViewBinding(activity: Activity)
-            : ActivityMapsBinding {
-        return ActivityMapsBinding
-            .inflate(activity.layoutInflater)
+    @Provides
+    fun provideBinding(activity: FragmentActivity): ActivityMapsBinding {
+        return ActivityMapsBinding.inflate(activity.layoutInflater)
     }
 }
