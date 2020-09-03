@@ -17,13 +17,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.madrat.myapp.databinding.ActivityMapsBinding
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 // Реализация этого решения
 // https://www.geeksforgeeks.org/how-to-get-user-location-in-android/
 
-@AndroidEntryPoint
 class MapsActivity : AppCompatActivity() {
     companion object {
         private const val PERMISSION_GET_LAST_LOCATION_ID = 44
@@ -31,21 +28,28 @@ class MapsActivity : AppCompatActivity() {
         private const val PERMISSIONS_ALLOW_USING_LOCATION_ID = 100
     }
 
-    @Inject lateinit var binding: ActivityMapsBinding
+    // ViewBinding
+    private lateinit var binding: ActivityMapsBinding
 
-    @Inject lateinit var locationClient: FusedLocationProviderClient
+    // Location Provider
+    private lateinit var locationClient: FusedLocationProviderClient
 
-    // Get the SupportMapFragment and request notification
-    // when the map is ready to be used.
+    // Google Map
     private lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(binding.root)
+        // Binding initialization
+        binding = ActivityMapsBinding.inflate(layoutInflater)
+
+        // Location Provider initialization
+        locationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Map initialization
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+        setContentView(binding.root)
     }
 
     override fun onStart() {
