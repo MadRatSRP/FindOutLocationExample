@@ -4,16 +4,13 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-// Kotlin Annotation Processing
-apply plugin: 'kotlin-kapt'
-
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.madrat.myapp"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,53 +28,17 @@ android {
 
 ext {
     // Jetpack
-    // Appcompat
-    appcompatVersion = '1.2.0'
-    // Core KTX
-    coreKtxVersion = '1.3.1'
-    // Fragment
-    fragmentVersion = "1.2.5"
-
-    // Google
-    // Maps
-    mapsVersion = "17.0.0"
-    // Location
-    locationVersion = "17.0.0"
-
-    // Testing
-    // Junit
-    junitVersion = '4.13'
-    // Junit Android
-    junitAndroidVersion = '1.1.2'
-    // Espresso
-    espressoVersion = '3.3.0'
+    // AppCompat
+    appCompatVersion = "1.2.0"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Jetpack
+    // AppCompat
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-
-    // Jetpack
-    // Appcompat
-    implementation "androidx.appcompat:appcompat:$appcompatVersion"
-    // Core KTX
-    implementation "androidx.core:core-ktx:$coreKtxVersion"
-    // Fragment
-    implementation "androidx.fragment:fragment-ktx:$fragmentVersion"
-
-    // Google
-    // Maps
-    implementation "com.google.android.gms:play-services-maps:$mapsVersion"
-    // Location
-    implementation "com.google.android.gms:play-services-location:$locationVersion"
-
-    // Testing
-    // Junit
-    testImplementation "junit:junit:$junitVersion"
-    // Test Junit
-    androidTestImplementation "androidx.test.ext:junit:$junitAndroidVersion"
-    // Espresso
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }

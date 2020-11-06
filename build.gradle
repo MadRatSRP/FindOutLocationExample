@@ -2,10 +2,10 @@
 
 buildscript {
     // Kotlin
-    ext.kotlinVersion = '1.4.0'
+    ext.kotlinVersion = '1.4.10'
 
     // Gradle
-    ext.gradleVersion = "4.0.1"
+    ext.gradleVersion = '4.1.0'
 
     repositories {
         google()
