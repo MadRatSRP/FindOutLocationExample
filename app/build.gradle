@@ -21,24 +21,75 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // Project Language Target Versions
+    // For Java
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // For Kotlin
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     buildFeatures {
         viewBinding true
     }
 }
 
 ext {
+    // Others
+    // ViewBindingDelegate-Stable
+    viewBindingDelegateVersion = "1.0.0"
+    // EasyPermissions
+    easyPermissionsVersion = "3.0.0"
+
     // Jetpack
     // AppCompat
     appCompatVersion = "1.2.0"
+    // ConstraintLayout
+    constraintLayoutVersion = "2.0.4"
+
+    // Android KTX
+    // Fragment
+    fragmentKTXVersion = "1.2.5"
+
+    // Google
+    // Maps
+    mapsVersion = "17.0.0"
+    // Location
+    locationVersion = "17.1.0"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Others
+    // ViewBindingDelegate-Stable
+    implementation "com.github.MadRatSRP:ViewBindingDelegate-Stable:$viewBindingDelegateVersion"
+    // EasyPermissions
+    implementation "pub.devrel:easypermissions:$easyPermissionsVersion"
+
     // Jetpack
     // AppCompat
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    // ConstraintLayout
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+
+    // Android KTX
+    // Fragment
+    implementation "androidx.fragment:fragment-ktx:$fragmentKTXVersion"
+
+    // Google
+    // Maps
+    implementation "com.google.android.gms:play-services-maps:$mapsVersion"
+    // Location
+    implementation "com.google.android.gms:play-services-location:$locationVersion"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+}
+
+repositories {
+    // ViewBindingDelegate-Stable
+    maven { url 'https://jitpack.io' }
 }
