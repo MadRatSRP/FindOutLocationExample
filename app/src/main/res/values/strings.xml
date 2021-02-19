@@ -7,4 +7,6 @@
     <string name="current_location">CurrentLocation</string>
     <string name="current_latitude">Latitude: %1$f</string>
     <string name="current_longitude">Longitude: %1$f</string>
+
+    <string name="location_is_required_msg">Location is required</string>
 </resources>

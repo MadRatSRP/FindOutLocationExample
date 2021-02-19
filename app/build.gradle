@@ -65,7 +65,7 @@ dependencies {
 
     // Others
     // ViewBindingDelegate-Stable
-    implementation "com.github.MadRatSRP:ViewBindingDelegate-Stable:$viewBindingDelegateVersion"
+    //implementation "com.github.MadRatSRP:ViewBindingDelegate-Stable:$viewBindingDelegateVersion"
     // EasyPermissions
     implementation "pub.devrel:easypermissions:$easyPermissionsVersion"
 
